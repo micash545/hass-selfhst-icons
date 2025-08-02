@@ -1,0 +1,4 @@
+[submodule "icons"]
+	path = icons
+	url = https://github.com/selfhst/icons
+	branch = main

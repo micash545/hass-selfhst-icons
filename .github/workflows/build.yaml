@@ -1,0 +1,56 @@
+name: Weekly JS Build and Release
+
+on:
+  schedule:
+    - cron: '0 9 * * 5' # Every Friday at 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build bundle
+        run: pnpm build
+
+      - name: Get current date for tag
+        id: date
+        run: echo "TAG=v$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+
+      - name: Get icons submodule commit hash
+        id: icons_commit
+        run: |
+          echo "commit_hash=$(cd icons/ && git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release and Upload Asset
+        uses: softprops/action-gh-release@v2
+
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Weekly release ${{ env.TAG }}
+          generate_release_notes: false
+          body: |
+            This release is up to date with selfhst/icons [${{ steps.icons_commit.outputs.commit_hash }}](https://github.com/selfhst/icons/commit/${{ steps.icons_commit.outputs.commit_hash }}) commit.
+          files: dist/hass-selfhst-icons.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
