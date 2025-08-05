@@ -1,6 +1,8 @@
 # HASS Selfh.st icons
 Use icons from selfhst catalog
 
+![Screenshot](./assets/screenshot.png)
+
 ## Installation
 
 ### HACS
