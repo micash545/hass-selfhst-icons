@@ -15,6 +15,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Update submodules to latest commit
+        run: git submodule update --remote --recursive
+
       - name: Check for icons/ submodule updates in the last 7 days
         id: check-updates
         run: |
