@@ -16,9 +16,30 @@ function parseSvgFile(filePath) {
 
   const viewBoxRaw = $("svg").attr("viewBox") || null;
   const viewBox = parseViewBox(viewBoxRaw);
-  const paths = $("path").map((_, el) => $(el).attr("d")).get();
 
-  return [...viewBox, ...paths]
+  // Get all circles and paths, including their styles
+  const circles = $("circle").map((_, el) => {
+    return {
+      type: "circle",
+      cx: $(el).attr("cx"),
+      cy: $(el).attr("cy"),
+      r: $(el).attr("r"),
+      class: $(el).attr("class"),
+      transform: $(el).attr("transform"),
+      style: $(el).attr("style"),
+    };
+  }).get();
+
+  const paths = $("path").map((_, el) => {
+    return {
+      type: "path",
+      d: $(el).attr("d"),
+      class: $(el).attr("class"),
+      style: $(el).attr("style"),
+    };
+  }).get();
+
+  return { viewBox, elements: [...circles, ...paths] };
 }
 
 function saveIcons(icons) {

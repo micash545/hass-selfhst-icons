@@ -6,10 +6,9 @@ function getIcon(name) {
   }
 
   const svgDef = icons[name];
-  const primaryPath = svgDef[4];
   return {
-    path: primaryPath,
-    viewBox: `${svgDef[0]} ${svgDef[1]} ${svgDef[2]} ${svgDef[3]}`,
+    viewBox: `${svgDef.viewBox[0]} ${svgDef.viewBox[1]} ${svgDef.viewBox[2]} ${svgDef.viewBox[3]}`,
+    elements: svgDef.elements,
   };
 }
 
